@@ -1,17 +1,49 @@
 #include <WaziDev.h>
 #include <xlpp.h>
+// 2E 1B EC C7 0D BC B9 C1 8F 50 E3 CA D5 D3 B0 AF
+unsigned char loRaWANKey[16] = {0x2E, 0x1B, 0xEC, 0xC7, 0x0D, 0xBC, 0xB9, 0xC1, 0x8F,
+                                0x50, 0xE3, 0xCA, 0xD5, 0xD3, 0xB0, 0xAF};
 
-unsigned char loRaWANKey[16] = {0x23, 0x15, 0x8D, 0x3B, 0xBC, 0x31, 0xE6, 0xAF,
-                                0x67, 0x0D, 0x19, 0x5B, 0x5A, 0xED, 0x55, 0x25};
-unsigned char devAddr[4] = {0x26, 0x01, 0x1D, 0x89};
+                                // B9C18F50
+unsigned char devAddr[4] = {0xB9, 0xC1, 0x8F, 0x50};
 
 WaziDev wazidev;
 
+/************ Add your code here **********/
+int proxSwitch = 5;
+int state = LOW;
+int value;
+/******************************************/
+
+
+/************ Add your code here **********/
+int readProxSwitch(void)
+{
+  value = digitalRead(proxSwitch);
+  if (value != state) {
+    state = value;
+    Serial.print("sensor value = ");
+    if (state == 0) {
+      Serial.println("target detected");
+      return (1);
+    }
+
+    else {
+      Serial.println("No target detected");
+      return (0);
+    }
+  }
+}
+/******************************************/
 
 void setup()
 {
   Serial.begin(9600);
   wazidev.setupLoRaWAN(devAddr, loRaWANKey);
+
+  /************ Add your code here **********/
+  pinMode(proxSwitch, INPUT);
+  /******************************************/
 
 }
 
@@ -36,27 +68,19 @@ int8_t uplink()
 {
   uint8_t err;
 
+/************ Add your code here **********/
   // 1.
   // Read sensor values.
-  int btn1 = 0;
-  int btn2 = 0;
-  int btn3 = 0;
+  int proximity = readProxSwitch();
 
   // 2.
   // Create xlpp payload for uplink.
   xlpp.reset();
   
   // Add sensor payload
-  xlpp.addSwitch(0, btn1);
-  xlpp.addSwitch(1, btn2);
-  xlpp.addSwitch(2, btn3);
+  xlpp.addSwitch(0, proximity);
+/******************************************/
 
-  Serial.print("Button1 val: ");
-  Serial.print(btn1);
-  Serial.print(" | Button2 val: ");
-  Serial.print(btn2);
-  Serial.print(" | Button3 val: ");
-  Serial.println(btn3);
   // 3.
   // Send payload uplink with LoRaWAN.
   serialPrintf("LoRaWAN send ... ");
