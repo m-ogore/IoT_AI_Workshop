@@ -68,7 +68,7 @@ int8_t uplink()
 {
   uint8_t err;
 
-/************ Add your code here **********/
+  /************ Add your code here **********/
   // 1.
   // Read sensor values.
   int proximity = readProxSwitch();
@@ -79,7 +79,7 @@ int8_t uplink()
   
   // Add sensor payload
   xlpp.addSwitch(0, proximity);
-/******************************************/
+  /******************************************/
 
   // 3.
   // Send payload uplink with LoRaWAN.
@@ -115,11 +115,11 @@ uint8_t downlink(uint16_t timeout)
   }
   serialPrintf("OK\n");
   
-  // serialPrintf("Time On Air: %d ms\n", endSend-startSend);
-  // serialPrintf("LoRa SNR: %d\n", wazidev.loRaSNR);
-  // serialPrintf("LoRa RSSI: %d\n", wazidev.loRaRSSI);
-  // serialPrintf("LoRaWAN frame size: %d\n", xlpp.offset+xlpp.len);
-  // serialPrintf("LoRaWAN payload len: %d\n", xlpp.len);
+  serialPrintf("Time On Air: %d ms\n", endSend-startSend);
+  serialPrintf("LoRa SNR: %d\n", wazidev.loRaSNR);
+  serialPrintf("LoRa RSSI: %d\n", wazidev.loRaRSSI);
+  serialPrintf("LoRaWAN frame size: %d\n", xlpp.offset+xlpp.len);
+  serialPrintf("LoRaWAN payload len: %d\n", xlpp.len);
   serialPrintf("Payload: ");
   if (xlpp.len == 0)
   {
